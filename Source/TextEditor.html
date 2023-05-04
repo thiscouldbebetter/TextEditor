@@ -1,0 +1,73 @@
+<html>
+<body>
+
+<div id="divUi">
+
+	<h3>Text Editor</h3>
+
+	<p>
+		Enter text or load it from a file, edit it, and then save it.
+	</p>
+
+	<div>
+		<label>File to Load:</label>
+		<input type="file" id="fileToLoad" />
+		<button onclick="loadFileAsText()">Load Selected File</button>
+	</div>
+
+	<div>
+		<label>Text to Edit:</label>
+		<br />
+		<textarea id="inputTextToSave" cols="80" rows="25"></textarea>
+	</div>
+
+	<div>
+		<label>Filename to Save As:</label>
+		<input id="inputFileNameToSaveAs"></input>
+		<button onclick="saveTextAsFile()">Save Text to File</button>
+	</div>
+
+</table>
+
+<script type="text/javascript">
+
+function saveTextAsFile()
+{
+	var textToSave = document.getElementById("inputTextToSave").value;
+	var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+	var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+	var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	downloadLink.href = textToSaveAsURL;
+	downloadLink.onclick = destroyClickedElement;
+	downloadLink.style.display = "none";
+	document.body.appendChild(downloadLink);
+
+	downloadLink.click();
+}
+
+function destroyClickedElement(event)
+{
+	document.body.removeChild(event.target);
+}
+
+function loadFileAsText()
+{
+	var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+	var fileReader = new FileReader();
+	fileReader.onload = function(fileLoadedEvent) 
+	{
+		var textFromFileLoaded = fileLoadedEvent.target.result;
+		document.getElementById("inputTextToSave").value = textFromFileLoaded;
+	};
+	fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+</script>
+
+</body>
+</html>
